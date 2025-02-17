@@ -35,7 +35,7 @@ def solve_linear_congruence(a, b, m):
     try:
         inv_a = pow(a_prime, -1, m_prime)
     except ValueError:
-        return []  # This should theoretically never happen since a' and m' are coprime
+        return []
 
     x0 = (inv_a * b_prime) % m_prime
     solutions = []
@@ -149,7 +149,7 @@ def solve_lin():
     m = int(input("Введите m: "))
 
     solve_linear_congruence(a, b, m)
-#solve_lin()
+solve_lin()
 
 class ModularArithmetic:
     def __init__(self, modulus):
