@@ -103,6 +103,7 @@ class PolynomialSolver:
         return True
     def __vectorToStr(self,vector):
         result = ''
+        if vector[0] == 0: return 0
         for i in range(len(vector)):
             if vector[i] > 0:
                 result += str(vector[i]) if i == len(vector)-1 or vector[i] > 1 and i < len(vector)-1 else ''
@@ -194,17 +195,43 @@ class PolynomialSolver:
             currentElemOfGF = primSolver.__multPols(sq,currentElemOfGF)
             currentElemOfGF = primSolver.__delPols(currentElemOfGF, primSolver.module)
             i = i + 1
-            print(currentElemOfGF,i)
+            print(primSolver.__vectorToStr(currentElemOfGF),end=', ')
             if currentElemOfGF == [1] or currentElemOfGF in alreadyWas:
                 break
             alreadyWas.append(currentElemOfGF)
         if i == 2**polDegree-1:
             return True
         return False
-solver = PolynomialSolver(2,'x^3+x+1')
-print(solver.addPolynomial('x^3+x','x^2+1'))
-print(solver.multPolynomial('x+1','x^3+x^2+1'))
+    def createCicleClasses(self):
+        seen = set()
+        cicleClasses = {}
+        for i in range(2**(len(self.module) - 1) - 1):
+            currentDegree = i
+            if currentDegree in seen:
+                continue
+            currentCycle = set()
+            while currentDegree not in currentCycle:
+                currentCycle.add(currentDegree)
+                seen.add(currentDegree)
+                currentDegree = (currentDegree * 2) % (2**(len(self.module) - 1)-1)
+            cicleClasses[i] = currentCycle
+        return cicleClasses
+    def returnPolynomomsForCycle(self):
+        cycles = self.createCicleClasses()
+        result = {"0":"M(g)=0"}
+        for cycle in cycles:
+            if cycle == 0: continue
+            pol = f"M{cycle}(g)="
+            for element in cycles[cycle]:
+                currentPol = self.multPolynomial(f"x^{element}","1")
+                pol += f"(g+{currentPol})"
+            result[cycle] = pol
+        return result
+
+solver = PolynomialSolver(2,'x^4+x+1')
+#print(solver.addPolynomial('x^3+x','x^2+1'))
 #print(solver.createNotPrivPolList(16))
 #print(solver.provePrivPolynomial('x^7+x^3+x^2+x+1'))
-#print(solver.checkPrimalPolynomail("x^6+x^3+1"))
-print("ВВЕДЕНИЕ В ТЕОРИЮ ЧИСЕЛ. ДИОФАНТОВЫ УРАВНЕНИЯ".lower().capitalize())
+print(solver.checkPrimalPolynomail("x^6+x^5+1"))
+#print(solver.createCicleClasses())
+#print(solver.returnPolynomomsForCycle().values())

@@ -106,3 +106,38 @@ def solve_lin():
 
     solve_linear_congruence(a, b, m)
 #solve_lin()
+
+class ModularArithmetic:
+    def __init__(self, modulus):
+        if modulus <= 0:
+            raise ValueError("Модуль должен быть положительным целым числом")
+        self.modulus = modulus
+
+    def add(self, a, b):
+        return (a + b) % self.modulus
+
+    def multiply(self, a, b):
+        return (a * b) % self.modulus
+
+    def power(self, base, exponent):
+        base = base % self.modulus  # Приводим base к допустимому диапазону
+        if exponent < 0:
+            phi = self.euler_totient(self.modulus)  # Функция Эйлера
+            exponent = (exponent % phi + phi)  # Приводим отрицательную степень к положительной
+        if math.gcd(base, self.modulus) == 1:
+            exponent = exponent % self.euler_totient(self.modulus)
+        result = 1
+        while exponent > 0:
+            result = self.multiply(base, result)
+            exponent -=1
+        return result
+
+    def euler_totient(self, n):
+        count = 0
+        for i in range(1, n):
+            if math.gcd(i, n) == 1:
+                count += 1
+        return count
+
+mod_arith = ModularArithmetic(17)
+print(mod_arith.power(3, -4))  # 3^4 % 17 = 81 % 17 = 13
