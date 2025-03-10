@@ -1,3 +1,4 @@
+import math
 from typing import List
 
 
@@ -103,7 +104,7 @@ class PolynomialSolver:
         return True
     def __vectorToStr(self,vector):
         result = ''
-        if vector[0] == 0: return 0
+        if not vector or vector[0] == 0: return "0"
         for i in range(len(vector)):
             if vector[i] > 0:
                 result += str(vector[i]) if i == len(vector)-1 or vector[i] > 1 and i < len(vector)-1 else ''
@@ -124,7 +125,7 @@ class PolynomialSolver:
         #print(result)
         return self.__vectorToStr(result)
 
-    def multPolynomial(self, polynomialFirst: str, polynomialSecond: str):
+    def multPolynomial(self, polynomialFirst: str, polynomialSecond: str)->str:
         firstVector = self.__parsePolynomial(polynomialFirst)
         secondVector = self.__parsePolynomial(polynomialSecond)
         #print(firstVector, secondVector)
@@ -216,6 +217,23 @@ class PolynomialSolver:
                 currentDegree = (currentDegree * 2) % (2**(len(self.module) - 1)-1)
             cicleClasses[i] = currentCycle
         return cicleClasses
+    def createGalueElems(self):
+        result = {0:"1"}
+        currentPol = "1"
+        for i in range(1,2**(len(self.module) - 1) - 1):
+            currentPol = self.multPolynomial(currentPol, "x")
+            result[i] = (currentPol)
+        return result
+    def solveEquasion(self,equasion:List[str]):
+        gals = ["0"]
+        gals.extend(list(self.createGalueElems().values()))
+        for i,gal in enumerate(gals):
+            for j in range(i+1,len(gals)):
+                print(gal,gals[j])
+                if self.multPolynomial(gal,gals[j]) == equasion[1] and self.addPolynomial(gal,gals[j]) == equasion[0]:
+                    return [gal,gals[j]]
+        return []
+
     def returnPolynomomsForCycle(self):
         cycles = self.createCicleClasses()
         result = {"0":"M(g)=0"}
@@ -232,6 +250,43 @@ solver = PolynomialSolver(2,'x^4+x+1')
 #print(solver.addPolynomial('x^3+x','x^2+1'))
 #print(solver.createNotPrivPolList(16))
 #print(solver.provePrivPolynomial('x^7+x^3+x^2+x+1'))
-print(solver.checkPrimalPolynomail("x^6+x^5+1"))
+print(solver.createGalueElems())
+print(solver.solveEquasion(["x^2+x","x^3+1"]))
 #print(solver.createCicleClasses())
 #print(solver.returnPolynomomsForCycle().values())
+
+# import matplotlib.pyplot as plt
+#
+# # Данные
+# x = ["0","1","g","g^2","g^3","g^4","g^5","g^6","g^7","g^8","g^9","g^10","g^11","g^12","g^13","g^14"]
+# ticks = range(0,16)
+# xVals = [0, 1, 1, 4, 4, 6, 6, 7, 7, 9, 9, 11, 11, 13, 13,]
+# y = [1, 7, 14, 9, 14, 4, 12, 9, 15, 10, 13, 2, 9, 0, 11,]
+#
+# # Создание графика
+# fig, ax = plt.subplots()
+#
+# # Рисуем точки и линию
+# ax.scatter(xVals, y, marker='o', linestyle='-', color='b', label="Данные")
+#
+# # Устанавливаем произвольные тики на осях
+# ax.set_xticks(ticks)
+# ax.set_yticks(ticks)
+# ax.set_yticklabels(x)  # Произвольные тики по Y
+# ax.set_xticklabels(x)  # Произвольные тики по X
+#
+# # Добавляем сетку и оформление
+# ax.grid(True, linestyle='--', alpha=0.6)
+# ax.legend()
+#
+# # Отображаем график
+# plt.show()
+
+i = 1
+while 2*i*31+1<2**29-1:
+    y = 2**29 - 1
+    x = 2*31*i+1
+    print(x, y)
+    if y%x == 0:
+        break
+    i = i +1
