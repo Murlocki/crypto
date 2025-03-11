@@ -247,11 +247,11 @@ class PolynomialSolver:
         return result
 
 solver = PolynomialSolver(2,'x^4+x+1')
-#print(solver.addPolynomial('x^3+x','x^2+1'))
+#print(solver.multPolynomial('x^3+x','0'))
 #print(solver.createNotPrivPolList(16))
 #print(solver.provePrivPolynomial('x^7+x^3+x^2+x+1'))
-print(solver.createGalueElems())
-print(solver.solveEquasion(["x^2+x","x^3+1"]))
+#print(solver.createGalueElems())
+print(solver.solveEquasion(["x^3+x^2+x+1","0"]))
 #print(solver.createCicleClasses())
 #print(solver.returnPolynomomsForCycle().values())
 
@@ -283,10 +283,9 @@ print(solver.solveEquasion(["x^2+x","x^3+1"]))
 # plt.show()
 
 i = 1
-while 2*i*31+1<2**29-1:
-    y = 2**29 - 1
-    x = 2*31*i+1
-    print(x, y)
-    if y%x == 0:
+while i<23:
+    x = 5*i**12 + 6*i
+    print(i,x%23)
+    if(x%23==8):
         break
     i = i +1
