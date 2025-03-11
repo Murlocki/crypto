@@ -104,7 +104,7 @@ class PolynomialSolver:
         return True
     def __vectorToStr(self,vector):
         result = ''
-        if not vector or vector[0] == 0: return "0"
+        if vector[0] == 0: return 0
         for i in range(len(vector)):
             if vector[i] > 0:
                 result += str(vector[i]) if i == len(vector)-1 or vector[i] > 1 and i < len(vector)-1 else ''
@@ -125,7 +125,7 @@ class PolynomialSolver:
         #print(result)
         return self.__vectorToStr(result)
 
-    def multPolynomial(self, polynomialFirst: str, polynomialSecond: str)->str:
+    def multPolynomial(self, polynomialFirst: str, polynomialSecond: str):
         firstVector = self.__parsePolynomial(polynomialFirst)
         secondVector = self.__parsePolynomial(polynomialSecond)
         #print(firstVector, secondVector)
