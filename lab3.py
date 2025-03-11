@@ -104,7 +104,7 @@ class PolynomialSolver:
         return True
     def __vectorToStr(self,vector):
         result = ''
-        if vector[0] == 0: return 0
+        if vector[0] == 0: return [0]
         for i in range(len(vector)):
             if vector[i] > 0:
                 result += str(vector[i]) if i == len(vector)-1 or vector[i] > 1 and i < len(vector)-1 else ''
