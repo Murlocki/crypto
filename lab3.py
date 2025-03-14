@@ -245,47 +245,21 @@ class PolynomialSolver:
                 pol += f"(g+{currentPol})"
             result[cycle] = pol
         return result
-
-solver = PolynomialSolver(2,'x^4+x+1')
+    def checkIfPrimElem(self,elem:str)->bool:
+        currentPol = elem
+        for i in range(1, 2 ** (len(self.module) - 1) - 1):
+            if currentPol == "1":
+                return False
+            currentPol = self.multPolynomial(currentPol, elem)
+            print(currentPol,i)
+        return True
+solver = PolynomialSolver(2,'x^6+x+1')
+#print(solver.checkIfPrimElem("x^15"))
 #print(solver.multPolynomial('x^3+x','0'))
 #print(solver.createNotPrivPolList(16))
 #print(solver.provePrivPolynomial('x^7+x^3+x^2+x+1'))
-#print(solver.createGalueElems())
-print(solver.solveEquasion(["x^3+x^2+x+1","0"]))
+print(solver.createGalueElems().values())
+#print(solver.solveEquasion(["x^3+x^2+x+1","0"]))
 #print(solver.createCicleClasses())
 #print(solver.returnPolynomomsForCycle().values())
 
-# import matplotlib.pyplot as plt
-#
-# # Данные
-# x = ["0","1","g","g^2","g^3","g^4","g^5","g^6","g^7","g^8","g^9","g^10","g^11","g^12","g^13","g^14"]
-# ticks = range(0,16)
-# xVals = [0, 1, 1, 4, 4, 6, 6, 7, 7, 9, 9, 11, 11, 13, 13,]
-# y = [1, 7, 14, 9, 14, 4, 12, 9, 15, 10, 13, 2, 9, 0, 11,]
-#
-# # Создание графика
-# fig, ax = plt.subplots()
-#
-# # Рисуем точки и линию
-# ax.scatter(xVals, y, marker='o', linestyle='-', color='b', label="Данные")
-#
-# # Устанавливаем произвольные тики на осях
-# ax.set_xticks(ticks)
-# ax.set_yticks(ticks)
-# ax.set_yticklabels(x)  # Произвольные тики по Y
-# ax.set_xticklabels(x)  # Произвольные тики по X
-#
-# # Добавляем сетку и оформление
-# ax.grid(True, linestyle='--', alpha=0.6)
-# ax.legend()
-#
-# # Отображаем график
-# plt.show()
-
-i = 1
-while i<23:
-    x = 5*i**12 + 6*i
-    print(i,x%23)
-    if(x%23==8):
-        break
-    i = i +1

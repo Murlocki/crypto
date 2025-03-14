@@ -26,7 +26,7 @@ def solve_lefts(coefs:list[list[int]]) -> int:
     for i in range(0,len(coefs)):
         solutions.append(solve_linear_congruence(new_bs[i], coefs[i][1], coefs[i][2]))
     return sum(new_bs[i] * sol for i,sol in enumerate(solutions)) % mult
-#print(solve_lefts([[1,8,6],[1,13,35],[1,4,11]]))
+print(solve_lefts([[1,1,3],[1,1,11],[1,16,17]]))
 def solve_lin():
     def extended_gcd(a1, m1):
         def calc_extended_gcd(r1,r2,s1,s2,t1,t2):
@@ -140,4 +140,4 @@ class ModularArithmetic:
         return count
 
 mod_arith = ModularArithmetic(17)
-print(mod_arith.power(3, -4))  # 3^4 % 17 = 81 % 17 = 13
+#print(mod_arith.power(3, -4))  # 3^4 % 17 = 81 % 17 = 13
