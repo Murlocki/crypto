@@ -191,4 +191,3 @@ mod_arith = ModularArithmetic(15)  # Работаем по модулю 17 (пр
 #print(mod_arith.multiply(4, 5))  # 20 % 17 = 3
 #print(mod_arith.power(3, 4))  # 3^4 % 17 = 81 % 17 = 13
 print(mod_arith.power(4, 16))  # Обратный элемент 3^(-1) % 17
-
