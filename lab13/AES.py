@@ -1,12 +1,16 @@
+import copy
 import os
+
+from lab3 import PolynomialSolver
 
 
 class AES:
     r_con = [
-        0x00, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40,
-        0x80, 0x1B, 0x36, 0x6C, 0xD8, 0xAB, 0x4D, 0x9A,
-        0x2F, 0x5E, 0xBC, 0x63, 0xC6, 0x97, 0x35, 0x6A,
-        0xD4, 0xB3, 0x7D, 0xFA, 0xEF, 0xC5, 0x91, 0x39,
+        0x00000000, 0x01000000, 0x02000000, 0x04000000, 0x08000000, 0x10000000, 0x20000000, 0x40000000,
+        0x80000000, 0x1B000000, 0x36000000,
+        # 0x6C, 0xD8, 0xAB, 0x4D, 0x9A,
+        # 0x2F, 0x5E, 0xBC, 0x63, 0xC6, 0x97, 0x35, 0x6A,
+        # 0xD4, 0xB3, 0x7D, 0xFA, 0xEF, 0xC5, 0x91, 0x39,
     ]
 
     s_box = [
@@ -47,6 +51,15 @@ class AES:
         [0x17, 0x2B, 0x04, 0x7E, 0xBA, 0x77, 0xD6, 0x26, 0xE1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0C, 0x7D],
     ]
 
+    # MixColumns
+    c_box = [
+        ["x", "x+1", "1", "1"],
+        ["1", "x", "x+1", "1"],
+        ["1", "1", "x", "x+1"],
+        ["x+1", "1", "1", "x"],
+    ]
+    pol_solver = PolynomialSolver(module="x^8+x^4+x^3+x+1")
+
     def __init__(self,
                  key: str = "10100111000000111010010100001111010110000100110100001011101111101001000001100000011110010001100110110100111110111101101100100111"):
         if len(key) not in [128, 192, 256]:
@@ -70,24 +83,18 @@ class AES:
                 words[i] = self.__xor_calc(words[i - 4], temp)
             else:
                 words[i] = self.__xor_calc(words[i - 1], words[i - 4])
-        print()
-        [print(hex(int(word,2))) for word in words]
-
+        self.round_keys = [''.join(words[i*4:(i+1)*4]) for i in range(0,11)]
     # Высчитываем локальное значение
     def __calcTemp(self, wPrev: str, i):
         w_prew_shift = self.__shift(wPrev, -8)
-        #print('t',hex(int(w_prew_shift,2)))
         w_sub = self.sub_bytes(w_prew_shift)
-        #print('t',hex(int(w_sub,2)))
-        return self.__xor_calc(w_sub, format(AES.r_con[i//4 - 1],"032b"))
+        return self.__xor_calc(w_sub, format(AES.r_con[i//4],"032b"))
     def sub_bytes(self, s:str)->str:
         result =""
         for i in range(4):
             current_byte = s[i*8:8*(i+1)]
-            #print('current',hex(int(current_byte,2)))
             row: int = int(current_byte[0:4],2)
             col: int = int(current_byte[4:],2)
-            #print(row,col,hex(AES.s_box[row][col]))
             result += format(AES.s_box[row][col],"08b")
         return result
 
@@ -100,6 +107,25 @@ class AES:
             result[(i + steps) % len(vals)] = val
         return ''.join(result)
 
+    # Сдвиг строки матрицы
+    @staticmethod
+    def __shift_row(value:list[str], steps:int) -> list[str]:
+        result = []*len(value)
+        for i in range(len(result)):
+            result[i] = value[(i+steps) % len(value)]
+        return result
+
+    # MixColumns для 1 столбца
+    def __mix_column(self, column: list[str])-> list[str]:
+
+
+    # Применение MixColumns
+    def mix_columns(self, matrix:list[list[str]]) -> list[list[str]]:
+        result_matrix = copy.deepcopy(matrix)
+        for i in range(len(matrix)):
+            for j in range(len(matrix[i])):
+                pass
+
     # Функция применения подстановки
     @staticmethod
     def __use_perm(init_string: str, permutation1: list[int]) -> str:
@@ -111,11 +137,30 @@ class AES:
         return "".join([str(int(first[i]) ^ int(second[i])) for i in range(len(first))])
 
     # Функция прогонки одного раунда
-    def __processOneRound(self, input_string: str, round_number: int, inverse: bool = False) -> str:
-        pass
+    def __process_one_round(self, input_matrix: list[list[str]], round_number: int) -> list[list[str]]:
+        sub_bytes_matrix: list[list[str]] = copy.deepcopy(input_matrix)
+        # сделали sub_bytes по матрице
+        for i,row in enumerate(input_matrix):
+            for j,col in enumerate(row):
+                sub_bytes_matrix[i][j] = self.sub_bytes(col)
+        # сделали shift_rows по строкам матрицы
+        shift_rows_matrix: list[list[str]] = copy.deepcopy(input_matrix)
+        for i,row in enumerate(input_matrix):
+            shift_rows_matrix[i] = self.__shift_row(sub_bytes_matrix[i],i)
+    # Функция перевода строки в матрицу
+    @staticmethod
+    def __str_to_matrix(plain_text:str)->list[list[str]]:
+        result = [[""]*4 for i in range(4)]
+        for i in range(16):
+            result[i//4][i%4] = plain_text[i*8:(i+1)*8]
+        return result
 
-    def encrypt(self, plaintext: str):
-        pass
+    def encrypt(self, plain_text: str):
+        matrix = self.__str_to_matrix(plain_text)
+        print("matrix",matrix)
+        for i in range(10):
+            matrix = self.__process_one_round(matrix, i)
+        return matrix
 
     def decrypt(self, ciphertext: str):
         pass
@@ -124,4 +169,9 @@ class AES:
 #d = AES(format(int(os.urandom(16).hex(), 16), "0128b"))
 #print(len(d.key))
 d = AES(format(int("0x2475A2B33475568831E2120013AA5487", 16), "0128b"))
-print(hex(int(d.key,2)))
+
+byte_text = "HelloWorldPlease".encode('utf-8')
+print(byte_text)
+binary_text = ''.join(f'{byte:08b}' for byte in byte_text)
+print(len(binary_text))
+d.encrypt(binary_text)

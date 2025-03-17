@@ -20,7 +20,7 @@ class PolynomialSolver:
             6: [[1, 0, 0, 0, 0, 1, 1], [1, 0, 0, 1, 0, 0, 1], [1, 0, 1, 0, 1, 1, 1], [1, 0, 1, 1, 0, 1, 1],
                   [1, 1, 0, 0, 0, 0, 1]]
         }
-    def __parsePolynomial(self,polynomialStr:str):
+    def parsePolynomial(self,polynomialStr:str):
         polynomialStr = polynomialStr + '+'
         elems = []
         currentElem = ''
@@ -102,7 +102,7 @@ class PolynomialSolver:
         elif len(vector1) < len(vector2):
             return False
         return True
-    def __vectorToStr(self,vector):
+    def vectorToStr(self,vector):
         result = ''
         if not vector or vector[0] == 0: return "0"
         for i in range(len(vector)):
@@ -116,24 +116,24 @@ class PolynomialSolver:
         return result[:-1]
 
     def addPolynomial(self,polynomialFirst:str,polynomialSecond:str):
-        firstVector = self.__parsePolynomial(polynomialFirst)
-        secondVector = self.__parsePolynomial(polynomialSecond)
+        firstVector = self.parsePolynomial(polynomialFirst)
+        secondVector = self.parsePolynomial(polynomialSecond)
         #print(firstVector,secondVector)
         polSum = self.__sumPols(firstVector,secondVector)
         #print(polSum)
         result = self.__delPols(polSum,self.module)
         #print(result)
-        return self.__vectorToStr(result)
+        return self.vectorToStr(result)
 
     def multPolynomial(self, polynomialFirst: str, polynomialSecond: str):
-        firstVector = self.__parsePolynomial(polynomialFirst)
-        secondVector = self.__parsePolynomial(polynomialSecond)
+        firstVector = self.parsePolynomial(polynomialFirst)
+        secondVector = self.parsePolynomial(polynomialSecond)
         #print(firstVector, secondVector)
         polMult = self.__multPols(firstVector, secondVector)
         #print(polMult)
         result = self.__delPols(polMult, self.module)
         #print(result)
-        return self.__vectorToStr(result)
+        return self.vectorToStr(result)
 
     def numberToBase(self,n):
         if n == 0:
@@ -161,8 +161,6 @@ class PolynomialSolver:
                     polList = self.prim.get(i,[])
                     polList.append(currentPol)
                     self.prim[i] = polList
-        # for k in self.prim.keys():
-        #     print(k,self.prim[k])
     def __checkIfPrime(self,polVector:List[int])->bool:
         vectorDegree = len(polVector) - 1
         self.createNotPrivPolList(vectorDegree)
@@ -178,11 +176,11 @@ class PolynomialSolver:
                 break
         return prim
     def provePrivPolynomial(self,pol:str)->bool:
-        polVector = self.__parsePolynomial(pol)
+        polVector = self.parsePolynomial(pol)
         return self.__checkIfPrime(polVector)
 
     def checkPrimalPolynomail(self,pol:str)->bool:
-        polVector = self.__parsePolynomial(pol)
+        polVector = self.parsePolynomial(pol)
         if not self.__checkIfPrime(polVector):
             return False
 
@@ -196,7 +194,7 @@ class PolynomialSolver:
             currentElemOfGF = primSolver.__multPols(sq,currentElemOfGF)
             currentElemOfGF = primSolver.__delPols(currentElemOfGF, primSolver.module)
             i = i + 1
-            print(primSolver.__vectorToStr(currentElemOfGF),end=', ')
+            print(primSolver.vectorToStr(currentElemOfGF),end=', ')
             if currentElemOfGF == [1] or currentElemOfGF in alreadyWas:
                 break
             alreadyWas.append(currentElemOfGF)
