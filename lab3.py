@@ -8,7 +8,7 @@ class PolynomialSolver:
         if module is None:
             self.module = 1
         else:
-            self.module = self.__parsePolynomial(module)
+            self.module = self.parsePolynomial(module)
         #print(self.module)
         self.prim = {
             1: [[1,0],[1, 1]],
@@ -104,7 +104,7 @@ class PolynomialSolver:
         return True
     def vectorToStr(self,vector):
         result = ''
-        if not vector or vector[0] == 0: return "0"
+        if not vector or vector[0] == 0 and len(vector) == 1: return "0"
         for i in range(len(vector)):
             if vector[i] > 0:
                 result += str(vector[i]) if i == len(vector)-1 or vector[i] > 1 and i < len(vector)-1 else ''
@@ -113,7 +113,7 @@ class PolynomialSolver:
                 if i<len(vector)-2:
                     result +='^'+str(len(vector)-i-1)
                 result += '+'
-        return result[:-1]
+        return result[:-1] if result else "0"
 
     def addPolynomial(self,polynomialFirst:str,polynomialSecond:str):
         firstVector = self.parsePolynomial(polynomialFirst)
