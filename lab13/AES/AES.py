@@ -82,7 +82,10 @@ class AES:
             raise ValueError("DES init key length is not 128 or 192 or 256 bytes")
         self.round_keys: list[str] = []
         self.__create_round_keys()
-
+        self.data_len_bytes = 16
+    @property
+    def key_length(self):
+        return len(self.key_object.key)
     # Создание ключа для каждого раунда
     def __create_round_keys(self):
         words: list[str] = [""] * (self.key_object.round_count + 1) * self.key_object.word_in_key_count
@@ -258,42 +261,36 @@ class AES:
 
     def encrypt(self, plain_text: str) -> str:
         matrix = self.__str_to_matrix(plain_text)
-        self.__print_matrix_16(matrix)
 
         matrix = self.add_round_key(matrix, 0)
-        self.__print_matrix_16(matrix)
         for i in range(1, self.key_object.round_count + 1):
             matrix = self.__process_one_round(matrix, i)
-            self.__print_matrix_16(matrix)
         return self.__matrix_to_str(matrix)
 
     def decrypt(self, ciphertext: str) -> str:
         matrix = self.__str_to_matrix(ciphertext)
-        self.__print_matrix_16(matrix)
         matrix = self.add_round_key(matrix, self.key_object.round_count)
-        self.__print_matrix_16(matrix)
         for i in range(self.key_object.round_count - 1, -1, -1):
             matrix = self.__process_one_round_back(matrix, i)
-            self.__print_matrix_16(matrix)
         return self.__matrix_to_str(matrix)
 
 
-# d = AES(format(int(os.urandom(16).hex(), 16), "0128b"))
-# print(len(d.key))
-d = AES(format(int("0x2475A2B33475568831E2120013AA5487", 16), "0128b"))
-
-# byte_text = "HelloWorldPlease".encode('utf-8')
-# print(byte_text)
-# binary_text = ''.join(f'{byte:08b}' for byte in byte_text)
-byte_text = "0x00041214120412000C00131108231919"
-binary_text = ''.join([format(int(s, 16), "04b") for s in byte_text[2:]])
-print(binary_text)
-result = d.encrypt(binary_text)
-print("result:", hex(int(result, 2)))
-
-binary_decrypt = d.decrypt(result)
-byte_data = bytes(int(binary_decrypt[i:i + 8], 2) for i in range(0, len(binary_decrypt), 8))
-# print("result decrypt:", byte_data.decode('utf-8'))
-print("result decrypt:", hex(int(binary_decrypt, 2))[2:].zfill(32))
+# # d = AES(format(int(os.urandom(16).hex(), 16), "0128b"))
+# # print(len(d.key))
+# d = AES(format(int("0x2475A2B33475568831E2120013AA5487", 16), "0128b"))
+#
+# # byte_text = "HelloWorldPlease".encode('utf-8')
+# # print(byte_text)
+# # binary_text = ''.join(f'{byte:08b}' for byte in byte_text)
+# byte_text = "0x00041214120412000C00131108231919"
+# binary_text = ''.join([format(int(s, 16), "04b") for s in byte_text[2:]])
 # print(binary_text)
-# print(binary_decrypt)
+# result = d.encrypt(binary_text)
+# print("result:", hex(int(result, 2)))
+#
+# binary_decrypt = d.decrypt(result)
+# byte_data = bytes(int(binary_decrypt[i:i + 8], 2) for i in range(0, len(binary_decrypt), 8))
+# # print("result decrypt:", byte_data.decode('utf-8'))
+# print("result decrypt:", hex(int(binary_decrypt, 2))[2:].zfill(32))
+# # print(binary_text)
+# # print(binary_decrypt)

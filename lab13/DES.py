@@ -109,7 +109,9 @@ class DES:
         self.round_keys: list[str] = []
         self.__create_round_keys()
         self.data_len_bytes = 8
-
+    @property
+    def key_length(self):
+        return len(self.key)
     # Создание ключа для каждого раунда
     def __create_round_keys(self):
         real_key = self.__use_perm(self.key, DES.del_perm)

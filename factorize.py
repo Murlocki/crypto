@@ -38,13 +38,13 @@ def factorizeFerm(number:int):
 def factorizeRho(number:int):
     x = 5
     y = 26
-    print(math.gcd(abs(x-y),number))
+    #print(math.gcd(abs(x-y),number))
     k = math.gcd(abs(x - y), number)
     while math.gcd(abs(x-y),number) == 1:
         x = (x**2+1)%number
         y = (y**2+1)%number
         y = (y**2+1)%number
-        print(x,y,math.gcd(abs(x-y),number))
+        #print(x,y,math.gcd(abs(x-y),number))
         k = math.gcd(abs(x-y),number)
     return k,number/k
 def factorizeP1(number:int):
@@ -57,10 +57,10 @@ def factorizeP1(number:int):
             e = e+1
         p = math.gcd(a-1,number)
         if 1<p<number:
-            print(a,e)
+            #print(a,e)
             return p
         B +=1
-print(factorizeP1(35))
+#print(factorizeP1(35))
 def findVich(number:int):
     degree:int = (number-1)//2
     for x in range(0,number):
