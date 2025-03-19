@@ -6,7 +6,7 @@ def millerTest(number:int):
     while n%2==0:
         k = k+1
         n = n//2
-    pred = 2**n%number
+    pred = pow(2,n,number)
     if pred == 1 or pred == number-1:
         return True
 

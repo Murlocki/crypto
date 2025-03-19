@@ -77,7 +77,7 @@ class GOST:
             e = 1
         print(f"z:{z} e:{e} s:{s} r:{r}")
         # Вычислили v
-        v = e**(self.euler_totient(q)-1)%self.q
+        v = pow(e,self.euler_totient(q)-1,self.q)
         #Вычислили z1 и z2
         z1 = (s*v)%self.q
         z2 = (-r*v)%self.q
